@@ -1,0 +1,78 @@
+version: '3.8'
+services:
+  catalogdb:
+    image: postgres:latest
+  basketdb:
+    image: postgres:latest
+
+  distributedcache:
+    image: redis 
+    # container_name: catalogdb
+    # restart: always
+    # environment:
+    #   POSTGRES_USER: admin
+    #   POSTGRES_PASSWORD: admin123
+    #   POSTGRES_DB: catalog
+    # ports:
+    #   - "5432:5432"
+    # volumes:
+    #   - postgres_catalog:/var/lib/postgresql/data
+  orderdb:
+    image: mcr.microsoft.com/mssql/server
+
+  messagebroker: 
+    image: rabbitmq:management
+
+  catalog.api:
+    image: ${DOCKER_REGISTRY-}catalogapi
+    build:
+      context: .
+      dockerfile: src/Services/Catalog/Catalog.API/Dockerfile
+
+  basket.api:
+    image: ${DOCKER_REGISTRY-}basketapi
+    build:
+      context: .
+      dockerfile: src/Services/Basket/Basket.API/Dockerfile
+
+  # discount.grpc:
+  #   image: ${DOCKER_REGISTRY-}discountgrpc
+  #   build:
+  #     context: .
+  #     dockerfile: src/Services/Discount/Discount.Grpc/Dockerfile
+
+  discount.grpc:
+    image: ${DOCKER_REGISTRY-}discountgrpc
+    build:
+      context: .
+      dockerfile: src/Services/Discount/Discount.Grpc/Dockerfile
+
+  ordering.api:
+    image: ${DOCKER_REGISTRY-}orderingapi
+    build:
+      context: .
+      dockerfile: src/Services/Ordering/Ordering.API/Dockerfile
+
+  yarpapigateway:
+    image: ${DOCKER_REGISTRY-}yarpapigateway
+    build:
+      context: .
+      dockerfile: src/ApiGateways/YarpApiGateway/Dockerfile
+
+  shopping.web:
+    image: ${DOCKER_REGISTRY-}shoppingweb
+    build:
+      context: .
+      dockerfile: src/WebApps/Shopping.Web/Dockerfile
+
+volumes:
+  postgres_catalog:
+  postgres_basket:
+
+
+
+
+
+
+
+
